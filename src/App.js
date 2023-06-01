@@ -4,13 +4,15 @@ import axios from 'axios'
 import { React, useState, useEffect } from 'react';
 import { Page } from './components/Page/Page';
 import { Pagination } from './components/Pagination/Pagination';
+ 
 function App() {
+
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(null)
-  const [elementsPerPage] = useState(10)
+  const [elementsPerPage] = useState(12)
   const [totalPhotos, setTotalPhotos] = useState(null);
-
+  const [prevPhoto, setPrevPhoto] = useState('');
 
 
   useEffect(()=>{
@@ -41,41 +43,38 @@ function App() {
       await axios.get(`https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key=c4TOqTp7PioRQCCGaEDwivRR9lYIDIfstO4GDOR6&page=${currentPage}&per_page=${elementsPerPage}`).
       then((response) => {
         setData(response.data)
-         
+        setPrevPhoto(response.data.photos[0].img_src)
+        console.log(prevPhoto)
         setIsLoading(false)
       })
       .catch((err)=>console.log(err))
-       
+      
   }
 
-  const getPageNavigation = ()=>{
+   
+  const getPageNavigation = () =>{
     const buttons = [];
     for (let i = 0; i < Math.ceil(totalPhotos/elementsPerPage); i++){
-    buttons.push(<button id = {i+1} onClick = {navButtonClickHandler} className='navButton'  >{i+1}</button>)
+      buttons.push(<button id = {i+1} onClick = {navButtonClickHandler} className='navButton'  >{i+1}</button>)
     }
     return buttons
   }
   return (
+    <div className='App'>  
     <div className="container">
       <> 
       { }
+      
       {
-          !isLoading  ?
-           <> 
-             
-
-           </> :<></>
-          }
-      {
-          !isLoading  ?
+           
           <> 
            <h1>  Total photos: {totalPhotos}</h1>
            {getPageNavigation()}
-           </> :<></>
+           </>  
       }
       </> 
        
-        <> 
+        <div className='content '> 
         {
            !isLoading && data.photos != undefined?
            <>{data.photos.map((elem) => 
@@ -85,8 +84,9 @@ function App() {
            )}</> 
            :<h1>Загрузка...</h1>
         }
-         </>
+         </div>
          
+    </div>
     </div>
   );
 }
