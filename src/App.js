@@ -17,8 +17,9 @@ function App() {
 
   useEffect(()=>{
      setTotalPhotos(856)
+     
     getElements()
-    
+     
   }, [currentPage])
 /* 
   useEffect(() => {
@@ -35,17 +36,24 @@ function App() {
   const navButtonClickHandler = event =>{
     const id = event.currentTarget.id;
     console.log(id);
-    setCurrentPage(id)
+    setTimeout(() => {
+      setCurrentPage(id)
+    }, 100)
+    
     getElements()
+  
   }
    const getElements = async () => {
       setIsLoading(true)
       await axios.get(`https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?sol=1000&api_key=c4TOqTp7PioRQCCGaEDwivRR9lYIDIfstO4GDOR6&page=${currentPage}&per_page=${elementsPerPage}`).
       then((response) => {
         setData(response.data)
-        setPrevPhoto(response.data.photos[0].img_src)
+        
         console.log(prevPhoto)
-        setIsLoading(false)
+        
+          setIsLoading(false)
+        
+      
       })
       .catch((err)=>console.log(err))
       
@@ -73,7 +81,7 @@ function App() {
            </>  
       }
       </> 
-       
+    
         <div className='content '> 
         {
            !isLoading && data.photos != undefined?
